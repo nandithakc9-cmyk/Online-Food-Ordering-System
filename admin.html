@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TastyBites - Admin Panel</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- ADMIN LOGIN -->
+<section id="loginSec"><div class="wrap"><div class="box auth">
+  <h2>🔐 Admin Login</h2>
+  <form onsubmit="adminLogin(event)">
+    <input id="au" placeholder="Username" required>
+    <input id="ap" type="password" placeholder="Password" required>
+    <button class="btn" style="width:100%">Login</button>
+  </form>
+  <p style="margin-top:12px;font-size:13px;color:#6b7280">Demo: admin / admin123</p>
+  <p style="margin-top:8px"><a class="link" href="index.html">← Back to website</a></p>
+</div></div></section>
+
+<!-- ADMIN PANEL -->
+<div id="panel" class="hide">
+<nav><b>⚙️ TastyBites Admin</b>
+  <div><a onclick="tab('dash')">Dashboard</a><a onclick="tab('foods')">Food Items</a><a onclick="tab('orders')">Orders</a>
+  <a href="index.html">Website</a><a onclick="adminLogout()">Logout</a></div></nav>
+<div class="wrap">
+  <section id="t-dash" class="view on"><h2>Dashboard</h2><br><div class="stats" id="stats"></div>
+    <h3>Recent Orders</h3><br><div class="tw" id="recent"></div></section>
+
+  <section id="t-foods" class="view"><h2>Manage Food Items</h2><br>
+    <div class="box"><h3 id="fTitle">Add New Food</h3>
+      <form onsubmit="saveFood(event)">
+        <input id="fid" type="hidden">
+        <input id="fn" placeholder="Food name" required>
+        <select id="fc"><option>Pizza</option><option>Burger</option><option>Indian</option><option>Pasta</option><option>Snacks</option><option>Dessert</option><option>Drinks</option><option>Other</option></select>
+        <input id="fp" type="number" min="1" placeholder="Price (₹)" required>
+        <input id="fi" placeholder="Image URL (paste any image link)">
+        <input id="fe" placeholder="Emoji (shown if image fails) e.g. 🍕" maxlength="2">
+        <input id="fd" placeholder="Short description" required>
+        <button class="btn">Save Food</button> <button type="button" class="btn s" onclick="resetForm()">Clear</button>
+      </form></div>
+    <div class="tw"><table id="foodTable"></table></div></section>
+
+  <section id="t-orders" class="view"><h2>Manage Customer Orders</h2><br><div class="tw" id="ordTable"></div></section>
+</div></div>
+
+<div id="toast"></div>
+<script src="js/common.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

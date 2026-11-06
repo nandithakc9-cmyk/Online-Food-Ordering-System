@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TastyBites - Online Food Ordering</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav>
+  <b onclick="nav('menu')">🍴 TastyBites</b>
+  <div>
+    <a onclick="nav('menu')">Menu</a>
+    <a onclick="nav('cart')">🛒 Cart (<span id="cc">0</span>)</a>
+    <a onclick="nav('orders')">My Orders</a>
+    <a id="authBtn" onclick="authClick()">Login</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</nav>
+
+<!-- MENU -->
+<section id="v-menu" class="view on">
+  <div class="hero"><h1>Hungry? Order your favourite food 🍕</h1><p>Fresh, hot and delivered fast to your door.</p>
+    <input id="search" placeholder="🔍 Search food items..." oninput="renderMenu()" style="max-width:420px">
+  </div>
+  <div class="wrap"><div class="cats" id="cats"></div><div class="grid" id="foodGrid"></div></div>
+</section>
+
+<!-- LOGIN / REGISTER -->
+<section id="v-auth" class="view"><div class="wrap"><div class="box auth">
+  <form id="loginForm" onsubmit="login(event)">
+    <h2>Customer Login</h2>
+    <input id="le" type="email" placeholder="Email" required>
+    <input id="lp" type="password" placeholder="Password" required>
+    <button class="btn" style="width:100%">Login</button>
+    <p style="margin-top:12px">New here? <span class="link" onclick="authForm(false)">Create account</span></p>
+  </form>
+  <form id="regForm" class="hide" onsubmit="register(event)">
+    <h2>Create Account</h2>
+    <input id="rn" placeholder="Full name" required>
+    <input id="re" type="email" placeholder="Email" required>
+    <input id="rph" placeholder="Phone (10 digits)" pattern="[0-9]{10}" required>
+    <input id="rp" type="password" placeholder="Password (min 4 chars)" minlength="4" required>
+    <button class="btn" style="width:100%">Register</button>
+    <p style="margin-top:12px">Already have an account? <span class="link" onclick="authForm(true)">Login</span></p>
+  </form>
+</div></div></section>
+
+<!-- CART -->
+<section id="v-cart" class="view"><div class="wrap"><h2>Your Cart</h2><br><div class="box" id="cartBox"></div></div></section>
+
+<!-- PAYMENT -->
+<section id="v-pay" class="view"><div class="wrap" style="max-width:700px">
+  <h2>Checkout &amp; Payment</h2><br>
+  <div class="box"><h3>Delivery Details</h3>
+    <input id="addr" placeholder="Full delivery address" required>
+    <input id="ph" placeholder="Phone number" required>
+  </div>
+  <div class="box"><h3>Order Summary</h3><div id="sum"></div></div>
+  <div class="box pm"><h3>Payment Method (Demo)</h3>
+    <label><input type="radio" name="pm" value="Cash on Delivery" checked onchange="pmChange()">💵 Cash on Delivery</label>
+    <label><input type="radio" name="pm" value="Demo Card" onchange="pmChange()">💳 Demo Card</label>
+    <label><input type="radio" name="pm" value="Demo UPI" onchange="pmChange()">📱 Demo UPI</label>
+    <div id="cardBox" class="hide"><input id="cn" placeholder="Card number (any 16 digits)" maxlength="16"><input id="cx" placeholder="MM/YY"><input id="cv" placeholder="CVV" maxlength="3"></div>
+    <div id="upiBox" class="hide"><input id="upi" placeholder="UPI ID (e.g. name@upi)"></div>
+    <p style="color:#6b7280;font-size:13px;margin:8px 0">This is a demo. No real money is charged.</p>
+    <button class="btn" style="width:100%" onclick="payNow()">Pay &amp; Place Order</button>
+  </div>
+</div></section>
+
+<!-- ORDERS -->
+<section id="v-orders" class="view"><div class="wrap"><h2>My Orders &amp; Tracking</h2><br><div id="ordList"></div></div></section>
+
+<div id="toast"></div>
+<script src="js/common.js"></script>
+<script src="js/customer.js"></script>
+</body>
+</html>

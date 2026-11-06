@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TastyBites – Online Food Ordering System</title>
+<style>
+:root{--p:#ff5a1f;--d:#1f2937;--bg:#f6f7fb;--g:#6b7280;--ok:#16a34a;--r:14px;--card:#fff;--line:#eee;--bd:#d1d5db;--bar:#e5e7eb;--ph:#ffe9dd;--nav:#1f2937}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Arial,sans-serif}
+body{background:var(--bg);color:var(--d)}
+nav{background:var(--nav);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 5%;position:sticky;top:0;z-index:9;flex-wrap:wrap;gap:8px}
+nav b{font-size:22px;color:var(--p);cursor:pointer}
+nav div{display:flex;gap:6px;flex-wrap:wrap}
+nav a{color:#fff;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:15px;text-decoration:none}
+nav a:hover{background:var(--p)}
+.hero{background:linear-gradient(120deg,#ff5a1f,#ff9a3c);color:#fff;text-align:center;padding:50px 5%}
+.hero h1{font-size:clamp(26px,5vw,44px)}.hero p{margin:10px 0 20px}.hero input{margin:6px auto;display:block}
+.wrap{padding:25px 5%;max-width:1200px;margin:auto}
+.view{display:none}.view.on{display:block}
+input,select,textarea{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;font-size:15px;margin:6px 0;background:var(--card);color:var(--d)}
+.btn{background:var(--p);color:#fff;border:0;padding:10px 18px;border-radius:10px;cursor:pointer;font-size:15px;font-weight:600}
+.btn:hover{opacity:.88}.btn.s{background:var(--nav)}.btn.red{background:#dc2626}.btn.sm{padding:6px 12px;font-size:13px}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.cats button{color:var(--d);border:1px solid var(--bd);background:var(--card);padding:7px 16px;border-radius:20px;cursor:pointer}
+.cats button.on{background:var(--p);color:#fff;border-color:var(--p)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.card{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:0 3px 12px #0001;transition:.2s}
+.card:hover{transform:translateY(-4px)}
+.card img,.ph{width:100%;height:170px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:70px;background:var(--ph)}
+.card .in{padding:14px}.card h3{font-size:18px}.card p{color:var(--g);font-size:13px;margin:5px 0}
+.card .row{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.price{color:var(--p);font-weight:700;font-size:18px}
+.box{background:var(--card);border-radius:var(--r);padding:22px;box-shadow:0 3px 12px #0001;margin-bottom:18px}
+.auth{max-width:400px;margin:30px auto}.auth h2{margin-bottom:10px}
+.link{color:var(--p);cursor:pointer;font-weight:600}
+.item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.item img,.item .ph{width:70px;height:60px;font-size:30px;border-radius:10px}
+.item .nm{flex:1;min-width:120px}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{color:var(--d);width:30px;height:30px;border-radius:50%;border:0;background:var(--line);cursor:pointer;font-size:16px}
+.tot{display:flex;justify-content:space-between;padding:6px 0}.tot.big{font-size:20px;font-weight:700;border-top:2px solid var(--line);margin-top:6px;padding-top:12px}
+.steps{display:flex;margin:18px 0}.st{flex:1;text-align:center;font-size:12px;color:var(--g);position:relative}
+.st i{display:block;width:28px;height:28px;border-radius:50%;background:var(--bar);margin:0 auto 5px;line-height:28px;font-style:normal;position:relative;z-index:1}
+.st:not(:first-child):before{content:"";position:absolute;top:13px;right:50%;width:100%;height:3px;background:var(--bar)}
+.st.on{color:var(--ok);font-weight:600}.st.on i,.st.on:before{background:var(--ok);color:#fff}
+.badge{color:#1f2937;padding:3px 10px;border-radius:12px;font-size:12px;background:#fde68a}.badge.Delivered{background:#bbf7d0}.badge.Cancelled{background:#fecaca}
+.pm label{display:block;padding:10px;border:1px solid var(--bd);border-radius:10px;margin:6px 0;cursor:pointer}
+.pm input{width:auto;margin-right:8px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--r);overflow:hidden}
+th,td{padding:10px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}th{background:var(--nav);color:#fff}
+.tw{overflow-x:auto}.thumb img,.thumb .ph{width:70px;height:55px;font-size:30px;border-radius:8px;object-fit:cover}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px;margin-bottom:20px}
+.stat{background:var(--card);padding:20px;border-radius:var(--r);box-shadow:0 3px 12px #0001;border-left:5px solid var(--p)}
+.stat b{font-size:28px;display:block}
+#toast{position:fixed;bottom:20px;right:20px;background:var(--nav);color:#fff;padding:12px 20px;border-radius:10px;display:none;z-index:99}
+.hide{display:none}
+@media(max-width:600px){nav{justify-content:center}.item{font-size:14px}}
+
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+nav{top:env(safe-area-inset-top,0px)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--nav)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--d:#e5e7eb;--bg:#0f172a;--g:#9ca3af;--card:#1e293b;--line:#334155;--bd:#475569;--bar:#334155;--ph:#3b2a22;--nav:#0b1220}}
+:root[data-theme="dark"]{color-scheme:dark;--d:#e5e7eb;--bg:#0f172a;--g:#9ca3af;--card:#1e293b;--line:#334155;--bd:#475569;--bar:#334155;--ph:#3b2a22;--nav:#0b1220}
+
+</style>
+</head>
+<body>
+<div id="site">
+<nav>
+  <b onclick="nav('menu')">🍴 TastyBites</b>
+  <div>
+    <a onclick="nav('menu')">Menu</a>
+    <a onclick="nav('cart')">🛒 Cart (<span id="cc">0</span>)</a>
+    <a onclick="nav('orders')">My Orders</a>
+    <a id="authBtn" onclick="authClick()">Login</a>
+    <a href="#admin">Admin</a>
+  </div>
+</nav>
+
+<!-- MENU -->
+<section id="v-menu" class="view on">
+  <div class="hero"><h1>Hungry? Order your favourite food 🍕</h1><p>Fresh, hot and delivered fast to your door.</p>
+    <input id="search" placeholder="🔍 Search food items..." oninput="renderMenu()" style="max-width:420px">
+  </div>
+  <div class="wrap"><div class="cats" id="cats"></div><div class="grid" id="foodGrid"></div></div>
+</section>
+
+<!-- LOGIN / REGISTER -->
+<section id="v-auth" class="view"><div class="wrap"><div class="box auth">
+  <form id="loginForm" onsubmit="login(event)">
+    <h2>Customer Login</h2>
+    <input id="le" type="email" placeholder="Email" required>
+    <input id="lp" type="password" placeholder="Password" required>
+    <button class="btn" style="width:100%">Login</button>
+    <p style="margin-top:12px">New here? <span class="link" onclick="authForm(false)">Create account</span></p>
+  </form>
+  <form id="regForm" class="hide" onsubmit="register(event)">
+    <h2>Create Account</h2>
+    <input id="rn" placeholder="Full name" required>
+    <input id="re" type="email" placeholder="Email" required>
+    <input id="rph" placeholder="Phone (10 digits)" pattern="[0-9]{10}" required>
+    <input id="rp" type="password" placeholder="Password (min 4 chars)" minlength="4" required>
+    <button class="btn" style="width:100%">Register</button>
+    <p style="margin-top:12px">Already have an account? <span class="link" onclick="authForm(true)">Login</span></p>
+  </form>
+</div></div></section>
+
+<!-- CART -->
+<section id="v-cart" class="view"><div class="wrap"><h2>Your Cart</h2><br><div class="box" id="cartBox"></div></div></section>
+
+<!-- PAYMENT -->
+<section id="v-pay" class="view"><div class="wrap" style="max-width:700px">
+  <h2>Checkout &amp; Payment</h2><br>
+  <div class="box"><h3>Delivery Details</h3>
+    <input id="addr" placeholder="Full delivery address" required>
+    <input id="ph" placeholder="Phone number" required>
+  </div>
+  <div class="box"><h3>Order Summary</h3><div id="sum"></div></div>
+  <div class="box pm"><h3>Payment Method (Demo)</h3>
+    <label><input type="radio" name="pm" value="Cash on Delivery" checked onchange="pmChange()">💵 Cash on Delivery</label>
+    <label><input type="radio" name="pm" value="Demo Card" onchange="pmChange()">💳 Demo Card</label>
+    <label><input type="radio" name="pm" value="Demo UPI" onchange="pmChange()">📱 Demo UPI</label>
+    <div id="cardBox" class="hide"><input id="cn" placeholder="Card number (any 16 digits)" maxlength="16"><input id="cx" placeholder="MM/YY"><input id="cv" placeholder="CVV" maxlength="3"></div>
+    <div id="upiBox" class="hide"><input id="upi" placeholder="UPI ID (e.g. name@upi)"></div>
+    <p style="color:#6b7280;font-size:13px;margin:8px 0">This is a demo. No real money is charged.</p>
+    <button class="btn" style="width:100%" onclick="payNow()">Pay &amp; Place Order</button>
+  </div>
+</div></section>
+
+<!-- ORDERS -->
+<section id="v-orders" class="view"><div class="wrap"><h2>My Orders &amp; Tracking</h2><br><div id="ordList"></div></div></section>
+
+
+</div>
+<div id="adminApp" class="hide">
+<!-- ADMIN LOGIN -->
+<section id="loginSec"><div class="wrap"><div class="box auth">
+  <h2>🔐 Admin Login</h2>
+  <form onsubmit="adminLogin(event)">
+    <input id="au" placeholder="Username" required>
+    <input id="ap" type="password" placeholder="Password" required>
+    <button class="btn" style="width:100%">Login</button>
+  </form>
+  <p style="margin-top:12px;font-size:13px;color:#6b7280">Demo: admin / admin123</p>
+  <p style="margin-top:8px"><a class="link" href="#menu">← Back to website</a></p>
+</div></div></section>
+
+<!-- ADMIN PANEL -->
+<div id="panel" class="hide">
+<nav><b>⚙️ TastyBites Admin</b>
+  <div><a onclick="tab('dash')">Dashboard</a><a onclick="tab('foods')">Food Items</a><a onclick="tab('orders')">Orders</a>
+  <a href="#menu">Website</a><a onclick="adminLogout()">Logout</a></div></nav>
+<div class="wrap">
+  <section id="t-dash" class="view on"><h2>Dashboard</h2><br><div class="stats" id="stats"></div>
+    <h3>Recent Orders</h3><br><div class="tw" id="recent"></div></section>
+
+  <section id="t-foods" class="view"><h2>Manage Food Items</h2><br>
+    <div class="box"><h3 id="fTitle">Add New Food</h3>
+      <form onsubmit="saveFood(event)">
+        <input id="fid" type="hidden">
+        <input id="fn" placeholder="Food name" required>
+        <select id="fc"><option>Pizza</option><option>Burger</option><option>Indian</option><option>Pasta</option><option>Snacks</option><option>Dessert</option><option>Drinks</option><option>Other</option></select>
+        <input id="fp" type="number" min="1" placeholder="Price (₹)" required>
+        <label style="font-size:13px;color:var(--g)">Food photo (choose from your device, optional)</label>
+        <input id="ff" type="file" accept="image/*" onchange="pickImg(this)"><input id="fi" type="hidden"><div id="prev" class="thumb"></div>
+        <input id="fe" placeholder="Emoji (shown if image fails) e.g. 🍕" maxlength="2">
+        <input id="fd" placeholder="Short description" required>
+        <button class="btn">Save Food</button> <button type="button" class="btn s" onclick="resetForm()">Clear</button>
+      </form></div>
+    <div class="tw"><table id="foodTable"></table></div></section>
+
+  <section id="t-orders" class="view"><h2>Manage Customer Orders</h2><br><div class="tw" id="ordTable"></div></section>
+</div></div>
+
+
+</div>
+<div id="toast"></div>
+<script>
+// ===== Shared helpers (used by customer and admin pages) =====
+const mem = {};   // backup copy in case the browser blocks localStorage
+const DB = {
+  get: (k, d) => { try { const v = localStorage.getItem(k); if (v !== null) return JSON.parse(v); } catch (e) {} return k in mem ? mem[k] : d; },
+  set: (k, v) => { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del: k => { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} }
+};
+const $ = s => document.querySelector(s);
+const money = n => '₹' + Number(n).toFixed(0);
+// Food "photo": a built-in illustration (works offline, no internet needed)
+const art = (e, a, b) => 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/><circle cx="335" cy="50" r="70" fill="#fff" opacity=".15"/><circle cx="55" cy="275" r="90" fill="#fff" opacity=".12"/><text x="200" y="195" font-size="130" text-anchor="middle">${e}</text></svg>`);
+
+// Show food image. If the internet/image fails, show an emoji instead.
+// Make text safe before putting it inside HTML (stops broken pages / script injection)
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function img(f) {
+  const em = esc(f.emoji || '🍽️').replace(/'/g, '');
+  if (!f.img) return `<div class="ph">${em}</div>`;
+  return `<img src="${esc(f.img)}" alt="${esc(f.name)}" onerror="this.outerHTML='<div class=ph>${em}</div>'">`;
+}
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
+  clearTimeout(t.h); t.h = setTimeout(() => t.style.display = 'none', 2200);
+}
+// Put sample data the first time the project runs
+function seed() {
+  if (DB.get('foods', null) === null) DB.set('foods', [
+    { id: 1, name: 'Margherita Pizza', cat: 'Pizza', price: 249, emoji: '🍕', img: art('🍕', '#ff9a3c', '#ef4444'), desc: 'Cheesy pizza with fresh basil and tomato.' },
+    { id: 2, name: 'Veg Burger', cat: 'Burger', price: 129, emoji: '🍔', img: art('🍔', '#f59e0b', '#b45309'), desc: 'Crispy patty with lettuce, cheese and sauce.' },
+    { id: 3, name: 'Chicken Biryani', cat: 'Indian', price: 199, emoji: '🍛', img: art('🍛', '#f97316', '#a16207'), desc: 'Mysore-style spicy biryani with raita.' },
+    { id: 4, name: 'Masala Dosa', cat: 'Indian', price: 90, emoji: '🥞', img: art('🥞', '#fbbf24', '#d97706'), desc: 'Crispy dosa with potato masala and chutney.' },
+    { id: 5, name: 'White Sauce Pasta', cat: 'Pasta', price: 169, emoji: '🍝', img: art('🍝', '#fde68a', '#f97316'), desc: 'Creamy pasta with veggies and herbs.' },
+    { id: 6, name: 'French Fries', cat: 'Snacks', price: 79, emoji: '🍟', img: art('🍟', '#facc15', '#ef4444'), desc: 'Golden, crunchy and lightly salted.' },
+    { id: 7, name: 'Chocolate Cake', cat: 'Dessert', price: 110, emoji: '🍰', img: art('🍰', '#a78bfa', '#be185d'), desc: 'Rich and soft chocolate cake slice.' },
+    { id: 8, name: 'Cold Coffee', cat: 'Drinks', price: 85, emoji: '🥤', img: art('🥤', '#92400e', '#451a03'), desc: 'Chilled creamy coffee with ice cream.' }
+  ]);
+  if (DB.get('users', null) === null) DB.set('users', []);
+  if (DB.get('orders', null) === null) DB.set('orders', []);
+}
+seed();
+const STATUS = ['Placed', 'Preparing', 'Out for Delivery', 'Delivered'];
+
+// ===== Customer side logic =====
+let user = DB.get('session', null);   // logged-in customer
+let cat = 'All';
+let goAfterLogin = 'menu';
+const getCart = () => DB.get('cart', []);
+const foods = () => DB.get('foods', []);
+
+// ---- Page switching ----
+function nav(v) { if (location.hash === '#' + v) show(v); else location.hash = v; }
+function show(v) {
+  document.querySelectorAll('#site .view').forEach(x => x.classList.remove('on'));
+  $('#v-' + v).classList.add('on');
+  if (v === 'menu') renderMenu();
+  if (v === 'cart') renderCart();
+  if (v === 'orders') { if (!user) return needLogin('orders'); renderOrders(); }
+  if (v === 'pay') renderPay();
+  updateNav(); window.scrollTo(0, 0);
+}
+function updateNav() {
+  $('#cc').textContent = getCart().reduce((a, c) => a + c.qty, 0);
+  $('#authBtn').textContent = user ? 'Logout (' + user.name.split(' ')[0] + ')' : 'Login';
+}
+function needLogin(next) { goAfterLogin = next; toast('Please login first'); authForm(true); nav('auth'); }
+
+// ---- Register / Login / Logout ----
+function authForm(isLogin) { $('#loginForm').classList.toggle('hide', !isLogin); $('#regForm').classList.toggle('hide', isLogin); }
+function authClick() {
+  if (user) { user = null; DB.del('session'); toast('Logged out'); nav('menu'); }
+  else { authForm(true); nav('auth'); }
+}
+function register(e) {
+  e.preventDefault();
+  const users = DB.get('users', []), email = $('#re').value.trim().toLowerCase();
+  if (users.some(u => u.email === email)) return toast('Email already registered');
+  users.push({ name: $('#rn').value.trim(), email, phone: $('#rph').value, pass: $('#rp').value });
+  DB.set('users', users); $('#regForm').reset(); $('#le').value = email; toast('Registered! Please login.'); authForm(true);
+}
+function login(e) {
+  e.preventDefault();
+  const u = DB.get('users', []).find(u => u.email === $('#le').value.trim().toLowerCase() && u.pass === $('#lp').value);
+  if (!u) return toast('Wrong email or password');
+  user = u; DB.set('session', u); $('#loginForm').reset(); toast('Welcome, ' + u.name + '!'); const go = goAfterLogin; goAfterLogin = 'menu'; nav(go);
+}
+
+// ---- Menu + Search ----
+function renderMenu() {
+  const all = foods(), cats = ['All', ...new Set(all.map(f => f.cat))];
+  $('#cats').innerHTML = cats.map(c => `<button class="${c === cat ? 'on' : ''}" onclick="cat='${c}';renderMenu()">${c}</button>`).join('');
+  const q = $('#search').value.toLowerCase();
+  const list = all.filter(f => (cat === 'All' || f.cat === cat) && (f.name + f.cat + f.desc).toLowerCase().includes(q));
+  $('#foodGrid').innerHTML = list.map(f => `<div class="card">${img(f)}<div class="in"><h3>${esc(f.name)}</h3><p>${esc(f.desc)}</p>
+    <div class="row"><span class="price">${money(f.price)}</span><button class="btn sm" onclick="addCart(${f.id})">Add to Cart</button></div></div></div>`).join('')
+    || '<p>No food items found 😕</p>';
+}
+
+// ---- Cart: add, update, remove ----
+function addCart(id) {
+  const c = getCart(), it = c.find(x => x.id === id);
+  it ? it.qty++ : c.push({ id, qty: 1 });
+  DB.set('cart', c); updateNav(); toast('Added to cart 🛒');
+}
+function chQty(id, d) {
+  let c = getCart(); const it = c.find(x => x.id === id); it.qty += d;
+  if (it.qty < 1) c = c.filter(x => x.id !== id);
+  DB.set('cart', c); renderCart(); updateNav();
+}
+function rmCart(id) { DB.set('cart', getCart().filter(x => x.id !== id)); renderCart(); updateNav(); toast('Item removed'); }
+function cartItems() { return getCart().map(c => ({ ...foods().find(f => f.id === c.id), qty: c.qty })).filter(i => i.name); }
+const DELIVERY = 30;
+function renderCart() {
+  const items = cartItems();
+  if (!items.length) { $('#cartBox').innerHTML = '<p>Your cart is empty 🛒</p><br><button class="btn" onclick="nav(\'menu\')">Browse Menu</button>'; return; }
+  const sub = items.reduce((a, i) => a + i.price * i.qty, 0);
+  $('#cartBox').innerHTML = items.map(i => `<div class="item">${img(i)}<div class="nm"><b>${esc(i.name)}</b><br>${money(i.price)}</div>
+    <div class="qty"><button onclick="chQty(${i.id},-1)">−</button><b>${i.qty}</b><button onclick="chQty(${i.id},1)">+</button></div>
+    <b>${money(i.price * i.qty)}</b><button class="btn red sm" onclick="rmCart(${i.id})">Remove</button></div>`).join('') +
+    `<div class="tot"><span>Subtotal</span><span>${money(sub)}</span></div><div class="tot"><span>Delivery</span><span>${money(DELIVERY)}</span></div>
+    <div class="tot big"><span>Total</span><span>${money(sub + DELIVERY)}</span></div><br>
+    <button class="btn" onclick="checkout()">Proceed to Checkout</button>
+    <button class="btn s" onclick="DB.set('cart',[]);renderCart();updateNav()">Clear Cart</button>`;
+}
+function checkout() { if (!user) return needLogin('pay'); nav('pay'); }
+
+// ---- Payment + Place order ----
+function renderPay() {
+  if (!user) return needLogin('pay');
+  const items = cartItems(); if (!items.length) { toast('Cart is empty'); return nav('menu'); }
+  const sub = items.reduce((a, i) => a + i.price * i.qty, 0);
+  $('#sum').innerHTML = items.map(i => `<div class="tot"><span>${esc(i.name)} × ${i.qty}</span><span>${money(i.price * i.qty)}</span></div>`).join('') +
+    `<div class="tot"><span>Delivery</span><span>${money(DELIVERY)}</span></div><div class="tot big"><span>Pay</span><span>${money(sub + DELIVERY)}</span></div>`;
+  $('#ph').value = user.phone || '';
+}
+function pmChange() {
+  const m = document.querySelector('[name=pm]:checked').value;
+  $('#cardBox').classList.toggle('hide', m !== 'Demo Card'); $('#upiBox').classList.toggle('hide', m !== 'Demo UPI');
+}
+function payNow() {
+  const addr = $('#addr').value.trim(), ph = $('#ph').value.trim(), m = document.querySelector('[name=pm]:checked').value;
+  if (!addr) return toast('Enter delivery address');
+  if (!/^[0-9]{10}$/.test(ph)) return toast('Enter a valid 10-digit phone number');
+  if (m === 'Demo Card' && (!/^[0-9]{16}$/.test($('#cn').value) || !/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test($('#cx').value) || !/^[0-9]{3}$/.test($('#cv').value))) return toast('Demo card: 16-digit number, MM/YY and 3-digit CVV');
+  if (m === 'Demo UPI' && !/^[\w.-]+@[\w.-]+$/.test($('#upi').value.trim())) return toast('Enter a valid UPI ID like name@upi');
+  const items = cartItems();
+  if (!items.length) { toast('Your cart is empty'); return nav('menu'); }
+  const total = items.reduce((a, i) => a + i.price * i.qty, 0) + DELIVERY;
+  const orders = DB.get('orders', []);
+  orders.push({
+    id: 'OD' + Date.now().toString().slice(-7), email: user.email, name: user.name, phone: ph, address: addr,
+    items: items.map(i => ({ name: i.name, price: i.price, qty: i.qty })), total, method: m,
+    payStatus: m === 'Cash on Delivery' ? 'Pending (COD)' : 'Paid (Demo)', status: 'Placed', date: new Date().toLocaleString()
+  });
+  DB.set('orders', orders); DB.set('cart', []);
+  ['addr', 'cn', 'cx', 'cv', 'upi'].forEach(id => $('#' + id).value = ''); document.querySelector('[name=pm]').checked = true; pmChange();
+  toast('Order placed successfully ✅'); nav('orders');
+}
+
+// ---- Order history + tracking ----
+function renderOrders() {
+  const list = DB.get('orders', []).filter(o => o.email === user.email).reverse();
+  $('#ordList').innerHTML = list.map(o => {
+    const idx = STATUS.indexOf(o.status);
+    const track = o.status === 'Cancelled' ? '<p style="color:#dc2626"><b>This order was cancelled.</b></p>' :
+      '<div class="steps">' + STATUS.map((s, i) => `<div class="st ${i <= idx ? 'on' : ''}"><i>${i <= idx ? '✓' : i + 1}</i>${s}</div>`).join('') + '</div>';
+    return `<div class="box"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px"><b>Order #${o.id}</b><span class="badge ${o.status}">${o.status}</span></div>
+      <small>${o.date}</small>${track}
+      <p>${o.items.map(i => esc(i.name) + ' × ' + i.qty).join(', ')}</p>
+      <p><b>Total: ${money(o.total)}</b> | ${o.method} | ${o.payStatus}</p><p>📍 ${esc(o.address)}</p>
+      ${o.status === 'Placed' ? `<br><button class="btn red sm" onclick="cancelOrder('${o.id}')">Cancel Order</button>` : ''}</div>`;
+  }).join('') || '<div class="box">No orders yet. <span class="link" onclick="nav(\'menu\')">Order something tasty!</span></div>';
+}
+function cancelOrder(id) {
+  if (!confirm('Cancel this order?')) return;
+  const o = DB.get('orders', []); o.find(x => x.id === id).status = 'Cancelled';
+  DB.set('orders', o); renderOrders(); toast('Order cancelled');
+}
+
+// Auto-refresh when the admin changes data in another tab
+window.addEventListener('storage', e => {
+  if (e.key === 'orders' && user && $('#v-orders').classList.contains('on')) renderOrders();
+  if (e.key === 'foods') { if ($('#v-menu').classList.contains('on')) renderMenu(); if ($('#v-cart').classList.contains('on')) renderCart(); }
+  updateNav();
+});
+updateNav();
+
+// ===== Admin side logic =====
+const ADMIN = { user: 'admin', pass: 'admin123' };   // change here if you want
+
+// admin login is remembered only until the tab is closed
+const sm = {};
+const SS = { get: k => { try { return sessionStorage.getItem(k); } catch (e) { return sm[k] || null; } },
+  set: (k, v) => { sm[k] = v; try { sessionStorage.setItem(k, v); } catch (e) {} },
+  del: k => { delete sm[k]; try { sessionStorage.removeItem(k); } catch (e) {} } };
+// Choose a food photo from the device, shrink it, and keep it as text inside localStorage
+function pickImg(inp) {
+  const file = inp.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = () => { const im = new Image(); im.onload = () => {
+    const k = Math.min(1, 500 / im.width), c = document.createElement('canvas');
+    c.width = Math.max(1, im.width * k); c.height = Math.max(1, im.height * k);
+    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+    $('#fi').value = c.toDataURL('image/jpeg', .75); $('#prev').innerHTML = img({ img: $('#fi').value, name: 'preview' });
+  }; im.onerror = () => toast('Could not read that image'); im.src = r.result; };
+  r.readAsDataURL(file);
+}
+function showPanel() {
+  const on = SS.get('admin') === '1';
+  $('#loginSec').classList.toggle('hide', on); $('#panel').classList.toggle('hide', !on);
+  if (on) tab('dash');
+}
+function adminLogin(e) {
+  e.preventDefault();
+  if ($('#au').value === ADMIN.user && $('#ap').value === ADMIN.pass) { SS.set('admin', '1'); showPanel(); }
+  else toast('Wrong admin username or password');
+}
+function adminLogout() { SS.del('admin'); showPanel(); }
+function tab(t) {
+  document.querySelectorAll('#panel .view').forEach(x => x.classList.remove('on'));
+  $('#t-' + t).classList.add('on');
+  if (t === 'dash') dash(); if (t === 'foods') foodList(); if (t === 'orders') orderList();
+}
+
+// ---- Dashboard ----
+const orders = () => DB.get('orders', []);
+function orderTable(list, manage) {
+  if (!list.length) return '<div class="box">No orders yet.</div>';
+  return `<table><tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th>${manage ? '<th>Action</th>' : ''}</tr>` +
+    list.map(o => `<tr><td>${o.id}<br><small>${o.date}</small></td><td>${esc(o.name)}<br><small>${esc(o.phone)}<br>${esc(o.address)}</small></td>
+    <td>${o.items.map(i => esc(i.name) + ' × ' + i.qty).join('<br>')}</td><td>${money(o.total)}</td><td>${o.method}<br><small>${o.payStatus}</small></td>
+    <td>${manage ? `<select onchange="setStatus('${o.id}',this.value)">${[...STATUS, 'Cancelled'].map(s => `<option ${s === o.status ? 'selected' : ''}>${s}</option>`).join('')}</select>` : `<span class="badge ${o.status}">${o.status}</span>`}</td>
+    ${manage ? `<td><button class="btn red sm" onclick="delOrder('${o.id}')">Delete</button></td>` : ''}</tr>`).join('') + '</table>';
+}
+function dash() {
+  const o = orders(), rev = o.filter(x => x.status !== 'Cancelled').reduce((a, x) => a + x.total, 0);
+  const box = (n, v) => `<div class="stat"><b>${v}</b>${n}</div>`;
+  $('#stats').innerHTML = box('Total Orders', o.length) + box('Pending Orders', o.filter(x => x.status === 'Placed' || x.status === 'Preparing').length) +
+    box('Revenue', money(rev)) + box('Customers', DB.get('users', []).length) + box('Food Items', DB.get('foods', []).length);
+  $('#recent').innerHTML = orderTable(o.slice().reverse().slice(0, 5), false);
+}
+
+// ---- Food items: add, edit, delete ----
+function foodList() {
+  $('#foodTable').innerHTML = '<tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Actions</th></tr>' +
+    DB.get('foods', []).map(f => `<tr><td style="width:90px" class="thumb">${img(f)}</td>
+    <td>${esc(f.name)}</td><td>${esc(f.cat)}</td><td>${money(f.price)}</td>
+    <td><button class="btn sm" onclick="editFood(${f.id})">Edit</button> <button class="btn red sm" onclick="delFood(${f.id})">Delete</button></td></tr>`).join('');
+}
+function saveFood(e) {
+  e.preventDefault();
+  const foods = DB.get('foods', []), id = $('#fid').value;
+  if (+$('#fp').value <= 0) return toast('Price must be more than 0');
+  const f = { name: $('#fn').value.trim(), cat: $('#fc').value, price: +$('#fp').value, img: $('#fi').value || art($('#fe').value || '🍽️', '#ff9a3c', '#ef4444'), emoji: $('#fe').value || '🍽️', desc: $('#fd').value.trim() };
+  if (id) { Object.assign(foods.find(x => x.id == id), f); toast('Food updated ✅'); }
+  else { f.id = Date.now(); foods.push(f); toast('Food added ✅'); }
+  DB.set('foods', foods); resetForm(); foodList();
+}
+function editFood(id) {
+  const f = DB.get('foods', []).find(x => x.id === id);
+  $('#fid').value = f.id; $('#fn').value = f.name; $('#fc').value = f.cat; $('#fp').value = f.price;
+  $('#fi').value = f.img.startsWith('data:image/svg') ? '' : f.img; $('#prev').innerHTML = img(f); $('#fe').value = f.emoji; $('#fd').value = f.desc;
+  $('#fTitle').textContent = 'Edit Food Item'; window.scrollTo(0, 0);
+}
+function delFood(id) {
+  if (!confirm('Delete this food item?')) return;
+  DB.set('foods', DB.get('foods', []).filter(x => x.id !== id)); foodList(); toast('Food deleted');
+}
+function resetForm() { document.querySelector('#t-foods form').reset(); $('#fid').value = ''; $('#fi').value = ''; $('#prev').innerHTML = ''; $('#fTitle').textContent = 'Add New Food'; }
+
+// ---- Orders: update status, delete ----
+window.addEventListener('storage', e => { if (e.key === 'orders' && SS.get('admin') === '1') { if ($('#t-orders').classList.contains('on')) orderList(); if ($('#t-dash').classList.contains('on')) dash(); } });
+function orderList() { $('#ordTable').innerHTML = orderTable(orders().slice().reverse(), true); }
+function setStatus(id, s) { const o = orders(); o.find(x => x.id === id).status = s; DB.set('orders', o); toast('Status updated to ' + s); }
+function delOrder(id) { if (!confirm('Delete this order?')) return; DB.set('orders', orders().filter(x => x.id !== id)); orderList(); toast('Order deleted'); }
+
+showPanel();
+
+
+// ===== Page routing: #menu #cart #pay #orders #auth are the customer site, #admin is the admin panel =====
+function route() {
+  const h = location.hash.slice(1), isAdmin = h === 'admin';
+  $('#site').classList.toggle('hide', isAdmin); $('#adminApp').classList.toggle('hide', !isAdmin);
+  if (isAdmin) { showPanel(); window.scrollTo(0, 0); }
+  else show(['menu', 'cart', 'pay', 'orders', 'auth'].includes(h) ? h : 'menu');
+}
+window.addEventListener('hashchange', route);
+route();
+
+</script>
+</body>
+</html>
